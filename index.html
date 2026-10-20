@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Self-expanding transcatheter valve. Anatomical motion study</title>
+<meta name="description" content="34-second anatomical motion study of a self-expanding transcatheter aortic valve. Nitinol frame recovery, porcine pericardial leaflet coaptation, and pulsatile flow in a calcified root.">
+<style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("fonts/SpaceGrotesk-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("fonts/SpaceGrotesk-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --bg: #0B0D13;
+    --teal: #00F5D4;
+    --ivory: #FFF1E6;
+    --coral: #FF5A5F;
+    --gold: #E2B657;
+    --muted: #b3a49c;
+    --line: rgba(255, 241, 230, 0.16);
+    --font: "Space Grotesk", Inter, "Avenir Next", "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ivory); font-family: var(--font); }
+  body {
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 42%, #1a1218 0%, var(--bg) 58%);
+  }
+  #stage { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .scrim {
+    position: fixed; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(11,13,19,0.72) 0%, rgba(11,13,19,0) 18%),
+      linear-gradient(0deg, rgba(11,13,19,0.88) 0%, rgba(11,13,19,0) 28%);
+  }
+  .top, .bottom, .key, .disclaimer { position: fixed; z-index: 2; }
+  .top {
+    top: 22px; left: 28px; right: 28px;
+    display: flex; justify-content: space-between; gap: 24px; align-items: flex-start;
+    pointer-events: none;
+  }
+  .kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--teal); margin: 0 0 6px;
+  }
+  h1 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; }
+  .sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; max-width: 46ch; line-height: 1.35; }
+  .readout { text-align: right; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; }
+  .readout strong { display: block; color: var(--ivory); font-weight: 500; font-size: 14px; }
+  .readout span { color: var(--muted); }
+  .key {
+    left: 28px; top: 128px; display: grid; gap: 7px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted);
+  }
+  .sw { display: flex; align-items: center; gap: 8px; }
+  .sw i { width: 14px; height: 3px; display: block; border-radius: 2px; }
+  .bottom {
+    left: 28px; right: 28px; bottom: 18px;
+    display: grid; gap: 10px;
+  }
+  .caption { min-height: 44px; }
+  .caption .phase {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold); margin: 0 0 4px;
+  }
+  .caption p { margin: 0; max-width: 78ch; font-size: 15px; line-height: 1.35; }
+  .transport { display: flex; align-items: center; gap: 12px; }
+  button {
+    appearance: none; border: 1px solid var(--line); background: rgba(11,13,19,0.55);
+    color: var(--ivory); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 8px 12px; border-radius: 999px; cursor: pointer;
+  }
+  button:hover, button:focus-visible { border-color: var(--teal); outline: none; }
+  button[aria-pressed="true"] { background: var(--ivory); color: #1a1214; border-color: var(--ivory); }
+  .slider { flex: 1; display: grid; gap: 6px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 99px;
+    background: linear-gradient(90deg,
+      #E2B657 0 14.8%,
+      #00F5D4 14.8% 29.5%,
+      #FF5A5F 29.5% 50.1%,
+      #FFF1E6 50.1% 73.6%,
+      #7ee8d4 73.6% 100%);
+    outline: none; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--ivory);
+  }
+  .phases { display: flex; gap: 6px; flex-wrap: wrap; }
+  .phases button { padding: 5px 8px; letter-spacing: 0.08em; }
+  .disclaimer {
+    right: 28px; bottom: 118px; width: min(340px, 36vw);
+    color: var(--muted); font-size: 11px; line-height: 1.4; text-align: right;
+  }
+  .badge {
+    position: fixed; right: 28px; top: 118px; z-index: 2;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ivory); border: 1px solid var(--line); padding: 6px 10px; border-radius: 999px;
+    background: rgba(11,13,19,0.4);
+  }
+  @media (max-width: 800px) {
+    .top { left: 16px; right: 16px; top: 14px; }
+    h1 { font-size: 18px; }
+    .sub { display: none; }
+    .key { top: auto; bottom: 168px; left: 16px; }
+    .disclaimer { display: none; }
+    .bottom { left: 16px; right: 16px; }
+    .caption p { font-size: 13px; }
+    .badge { top: 78px; right: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="Animated anatomical study of a self-expanding transcatheter aortic valve"></canvas>
+<div class="scrim"></div>
+<header class="top">
+  <div>
+    <p class="kicker">Kinetic Gain motion study 01</p>
+    <h1>Self-expanding transcatheter valve</h1>
+    <p class="sub">Nitinol shape recovery and porcine pericardial coaptation inside a calcified aortic root. 34 seconds, 1,020 frames, 30 fps.</p>
+  </div>
+  <div class="readout">
+    <strong id="tc">00:00:00</strong>
+    <span id="fr">F 0000</span>
+  </div>
+</header>
+<div class="key" aria-hidden="true">
+  <div class="sw"><i style="background:#00F5D4"></i> Nitinol frame</div>
+  <div class="sw"><i style="background:#FFF1E6"></i> Pericardial leaflet</div>
+  <div class="sw"><i style="background:#FF5A5F"></i> Calcified leaflet</div>
+  <div class="sw"><i style="background:#E2B657"></i> Radiopaque marker</div>
+</div>
+<div class="badge" id="badge" hidden></div>
+<p class="disclaimer">Educational anatomical study. Proportions are stylized so the 14-French catheter, frame, and root read together. This is not a device, not an instruction for use, and not a prediction of a clinical result. The sealed skirt is a property of this model.</p>
+<footer class="bottom">
+  <div class="caption">
+    <p class="phase" id="phase-label">01 / 05 Axial alignment</p>
+    <p id="phase-copy"></p>
+  </div>
+  <div class="transport">
+    <button id="play" type="button" aria-pressed="true">Pause</button>
+    <button id="restart" type="button">Restart</button>
+    <div class="slider">
+      <input id="scrub" type="range" min="0" max="1019" value="0" aria-label="Frame scrubber">
+    </div>
+  </div>
+  <div class="phases" role="group" aria-label="Jump to phase">
+    <button type="button" data-frame="40">01 Align</button>
+    <button type="button" data-frame="220">02 Unsheath</button>
+    <button type="button" data-frame="400">03 Appose</button>
+    <button type="button" data-frame="640">04 Coapt</button>
+    <button type="button" data-frame="920">05 Flow</button>
+  </div>
+</footer>
+<script>
+(() => {
+  const canvas = document.getElementById("stage");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  const glowCanvas = document.createElement("canvas");
+  const gtx = glowCanvas.getContext("2d", { alpha: true });
+
+  const TAU = Math.PI * 2;
+  const ANN = 14.6;
+  const FRAME_ANN = 12.55;
+  const CRIMP = 1.9;
+  const CAP_R = 2.55;
+  const SHAFT_R = 1.2;
+  const LOBE = Math.PI / 3;
+  const Z0 = -8;
+  const Z1 = 22;
+  const COLS = 18;
+  const ROWS = 12;
+  let viewLimit = 80;
+
+  const params = new URLSearchParams(location.search);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let playhead = params.has("frame") ? Number(params.get("frame")) / 30
+    : params.has("t") ? Number(params.get("t"))
+    : reduce ? 400 / 30 : 0;
+  if (!Number.isFinite(playhead)) playhead = 0;
+  let playing = !(reduce || params.get("pause") === "1");
+  let scrubbing = false;
+
+  const pool = [];
+  const order = [];
+  let primCount = 0;
+  const scratch = { x: 0, y: 0, z: 0 };
+
+  const cam = {
+    px: 0, py: 0, pz: 1,
+    rx: 1, ry: 0, rz: 0,
+    ux: 0, uy: 1, uz: 0,
+    fx: 0, fy: 0, fz: 1,
+    focal: 800, ortho: 0, oScale: 24,
+    cx: 0, cy: 0, w: 1, h: 1
+  };
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function smooth(t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); }
+  function ramp(frame, a, b) { return smooth((frame - a) / (b - a)); }
+  function hash(n) {
+    const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  }
+  function norm(x, y, z) {
+    const L = Math.hypot(x, y, z) || 1;
+    return [x / L, y / L, z / L];
+  }
+  function shade(r, g, b, light, fog) {
+    const L = 0.26 + 0.74 * clamp(light, 0, 1);
+    const f = clamp(fog, 0, 0.62);
+    return `rgb(${((r * L) * (1 - f) + 11 * f) | 0},${((g * L) * (1 - f) + 13 * f) | 0},${((b * L) * (1 - f) + 19 * f) | 0})`;
+  }
+  function rgb(r, g, b) { return `rgb(${r | 0},${g | 0},${b | 0})`; }
+
+  function systemShift(frame) {
+    if (frame >= 145) return 0;
+    const t = clamp((frame - 8) / 125, 0, 1);
+    const e = 1 - Math.pow(1 - t, 3);
+    return (1 - e) * 7.2;
+  }
+  function sheathLip(frame) {
+    const shift = systemShift(frame);
+    if (frame <= 151) return Z0 - 1.2 + shift;
+    const t = smooth(clamp((frame - 151) / 149, 0, 1));
+    return lerp(Z0 - 1.2, 34, t);
+  }
+  function springAt(z, frame) {
+    const open = clamp((sheathLip(frame) - z) / 10, 0, 1);
+    return open * open * (3 - 2 * open);
+  }
+  function expansion(frame) {
+    return springAt(0, frame);
+  }
+  function targetRadius(v) {
+    if (v < 0.28) return lerp(13.3, FRAME_ANN, v / 0.28);
+    if (v < 0.62) return lerp(FRAME_ANN, 13.05, (v - 0.28) / 0.34);
+    return lerp(13.05, 14.15, (v - 0.62) / 0.38);
+  }
+  function frameRadius(z, frame) {
+    const v = clamp((z - Z0) / (Z1 - Z0), 0, 1);
+    return lerp(CRIMP, targetRadius(v), springAt(z, frame));
+  }
+  function rootRadius(theta, z, openAmount) {
+    let r;
+    if (z < 0) r = lerp(ANN, 15.4, clamp(-z / 24, 0, 1));
+    else if (z < 22) {
+      const env = Math.sin(clamp(z / 22, 0, 1) * Math.PI);
+      const lobe = 0.5 + 0.5 * Math.cos(3 * (theta - LOBE));
+      r = ANN + env * (1.8 + 4.6 * lobe);
+    } else r = lerp(15.1, 16.4, clamp((z - 22) / 24, 0, 1));
+    if (z > 18) r += openAmount * 0.55;
+    return r;
+  }
+  function cardiac(frame) {
+    const t = Math.max(0, (frame - 511) / 30);
+    const period = 1.45;
+    const p = frame < 500 ? 0.62 : (t % period) / period;
+    let open = 0;
+    if (frame >= 500) {
+      if (p < 0.1) open = smooth(p / 0.1);
+      else if (p < 0.3) open = 1;
+      else if (p < 0.46) open = 1 - smooth((p - 0.3) / 0.16);
+    }
+    const exist = ramp(frame, 220, 330);
+    return { open: open * Math.max(exist, frame >= 500 ? 1 : exist), exist, p, systole: open > 0.45 };
+  }
+  function catheterPresence(frame) {
+    if (frame < 478) return 1;
+    if (frame > 545) return 0;
+    return 1 - ramp(frame, 478, 545);
+  }
+  function catheterWithdraw(frame) {
+    if (frame < 478) return 0;
+    return ramp(frame, 478, 560) * 46;
+  }
+  function cutX(frame) {
+    if (frame < 268) return 80;
+    if (frame < 360) return lerp(80, 6.2, ramp(frame, 268, 360));
+    if (frame < 488) return 6.2;
+    if (frame < 540) return lerp(6.2, 80, ramp(frame, 488, 540));
+    if (frame < 770) return 80;
+    if (frame < 880) return lerp(80, 5.4, ramp(frame, 770, 880));
+    return 5.4;
+  }
+  function dispAmount(frame) {
+    return ramp(frame, 190, 470);
+  }
+
+  const CAM_KEYS = [
+    { f: 0, x: 0, y: 0.4, z: 62, lx: 0, ly: 0, lz: 2, fov: 18, ortho: 0.82, scale: 15.2 },
+    { f: 150, x: 6, y: 4, z: 56, lx: 0, ly: 0, lz: 1, fov: 20, ortho: 0.4, scale: 15.5 },
+    { f: 250, x: 62, y: 14, z: 8, lx: 0, ly: 0, lz: 4, fov: 28, ortho: 0, scale: 15.5 },
+    { f: 450, x: 66, y: 12, z: 12, lx: 0, ly: 0, lz: 5, fov: 28, ortho: 0, scale: 15.5 },
+    { f: 545, x: 10, y: 2, z: 64, lx: 0, ly: 0, lz: 4, fov: 22, ortho: 0.7, scale: 15.4 },
+    { f: 630, x: 0, y: 0.2, z: 58, lx: 0, ly: 0, lz: 4, fov: 20, ortho: 1, scale: 14.8 },
+    { f: 750, x: 0, y: 0.3, z: 56, lx: 0, ly: 0, lz: 4, fov: 20, ortho: 1, scale: 15 },
+    { f: 880, x: 58, y: 18, z: 36, lx: 0, ly: 0.4, lz: 6, fov: 30, ortho: 0, scale: 15 },
+    { f: 1019, x: 72, y: 22, z: 48, lx: 0, ly: 0.2, lz: 6, fov: 30, ortho: 0, scale: 15 }
+  ];
+
+  function cameraAt(frame) {
+    let i = 0;
+    while (i < CAM_KEYS.length - 2 && frame > CAM_KEYS[i + 1].f) i++;
+    const a = CAM_KEYS[i];
+    const b = CAM_KEYS[i + 1];
+    const t = smooth((frame - a.f) / (b.f - a.f));
+    return {
+      x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), z: lerp(a.z, b.z, t),
+      lx: lerp(a.lx, b.lx, t), ly: lerp(a.ly, b.ly, t), lz: lerp(a.lz, b.lz, t),
+      fov: lerp(a.fov, b.fov, t), ortho: lerp(a.ortho, b.ortho, t),
+      scale: lerp(a.scale, b.scale, t)
+    };
+  }
+
+  function setCamera(frame, w, h) {
+    const c = cameraAt(frame);
+    const f = norm(c.lx - c.x, c.ly - c.y, c.lz - c.z);
+    let r = norm(f[1] * 0 - f[2] * 1, f[2] * 0 - f[0] * 0, f[0] * 1 - f[1] * 0);
+    if (Math.hypot(r[0], r[1], r[2]) < 0.2) r = [1, 0, 0];
+    const u = norm(
+      r[1] * f[2] - r[2] * f[1],
+      r[2] * f[0] - r[0] * f[2],
+      r[0] * f[1] - r[1] * f[0]
+    );
+    cam.px = c.x; cam.py = c.y; cam.pz = c.z;
+    cam.fx = f[0]; cam.fy = f[1]; cam.fz = f[2];
+    cam.rx = r[0]; cam.ry = r[1]; cam.rz = r[2];
+    cam.ux = u[0]; cam.uy = u[1]; cam.uz = u[2];
+    cam.focal = (h * 0.5) / Math.tan((c.fov * Math.PI / 180) * 0.5);
+    cam.ortho = c.ortho;
+    cam.oScale = c.scale * (h / 900);
+    cam.cx = w * 0.5;
+    cam.cy = h * 0.52;
+    cam.w = w; cam.h = h;
+  }
+
+  function depthOf(x, y, z) {
+    return (x - cam.px) * cam.fx + (y - cam.py) * cam.fy + (z - cam.pz) * cam.fz;
+  }
+  function project(x, y, z) {
+    const dx = x - cam.px, dy = y - cam.py, dz = z - cam.pz;
+    const cx = dx * cam.rx + dy * cam.ry + dz * cam.rz;
+    const cy = dx * cam.ux + dy * cam.uy + dz * cam.uz;
+    const cz = dx * cam.fx + dy * cam.fy + dz * cam.fz;
+    const persp = cam.focal / Math.max(0.35, cz);
+    const s = lerp(persp, cam.oScale, cam.ortho);
+    return { sx: cam.cx + cx * s, sy: cam.cy - cy * s, depth: cz, s, behind: cz < 0.2 };
+  }
+
+  function alloc() {
+    let p = pool[primCount];
+    if (!p) {
+      p = pool[primCount] = { xyz: new Float32Array(18), n: 0 };
+    }
+    primCount++;
+    return p;
+  }
+  function pushPoly(pts, color, alpha, glow, stroke) {
+    if (alpha < 0.02 || pts.length < 3) return;
+    const p = alloc();
+    p.type = "poly";
+    p.color = color;
+    p.alpha = alpha;
+    p.glow = glow || 0;
+    p.stroke = stroke || 0;
+    p.width = 1;
+    p.n = pts.length;
+    let d = 0;
+    for (let i = 0; i < pts.length; i++) {
+      p.xyz[i * 3] = pts[i].x;
+      p.xyz[i * 3 + 1] = pts[i].y;
+      p.xyz[i * 3 + 2] = pts[i].z;
+      d += depthOf(pts[i].x, pts[i].y, pts[i].z);
+    }
+    p.depth = d / pts.length;
+  }
+  function pushLine(x0, y0, z0, x1, y1, z1, color, width, alpha, glow) {
+    if (alpha < 0.02) return;
+    if (viewLimit < 40) {
+      const ain = x0 <= viewLimit;
+      const bin = x1 <= viewLimit;
+      if (!ain && !bin) return;
+      if (ain !== bin) {
+        const t = (viewLimit - x0) / ((x1 - x0) || 1e-6);
+        const ix = viewLimit;
+        const iy = y0 + (y1 - y0) * t;
+        const iz = z0 + (z1 - z0) * t;
+        if (!ain) { x0 = ix; y0 = iy; z0 = iz; }
+        else { x1 = ix; y1 = iy; z1 = iz; }
+      }
+    }
+    const p = alloc();
+    p.type = "line";
+    p.color = color;
+    p.alpha = alpha;
+    p.glow = glow || 0;
+    p.width = width;
+    p.n = 2;
+    p.xyz[0] = x0; p.xyz[1] = y0; p.xyz[2] = z0;
+    p.xyz[3] = x1; p.xyz[4] = y1; p.xyz[5] = z1;
+    p.depth = (depthOf(x0, y0, z0) + depthOf(x1, y1, z1)) * 0.5;
+  }
+
+  const P = [0, 1, 2, 3].map(() => ({ x: 0, y: 0, z: 0 }));
+  function setP(i, x, y, z) { P[i].x = x; P[i].y = y; P[i].z = z; }
+
+  function clipKeep(pts, limit) {
+    const out = [];
+    const n = pts.length;
+    for (let i = 0; i < n; i++) {
+      const a = pts[i];
+      const b = pts[(i + 1) % n];
+      const ain = a.x <= limit;
+      const bin = b.x <= limit;
+      if (ain && bin) out.push(b);
+      else if (ain && !bin) {
+        const t = (limit - a.x) / (b.x - a.x);
+        out.push({ x: limit, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t });
+      } else if (!ain && bin) {
+        const t = (limit - a.x) / (b.x - a.x);
+        out.push({ x: limit, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t });
+        out.push(b);
+      }
+    }
+    return out;
+  }
+
+  function quadNormal(pts) {
+    const ax = pts[1].x - pts[0].x, ay = pts[1].y - pts[0].y, az = pts[1].z - pts[0].z;
+    const bx = pts[2].x - pts[0].x, by = pts[2].y - pts[0].y, bz = pts[2].z - pts[0].z;
+    return norm(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx);
+  }
+  function inwardLight(pts) {
+    const n = quadNormal(pts);
+    const cx = (pts[0].x + pts[1].x + pts[2].x) / 3;
+    const cy = (pts[0].y + pts[1].y + pts[2].y) / 3;
+    if (n[0] * cx + n[1] * cy > 0) { n[0] *= -1; n[1] *= -1; n[2] *= -1; }
+    const L = norm(0.25, 0.86, 0.45);
+    const d = Math.max(0, n[0] * L[0] + n[1] * L[1] + n[2] * L[2]);
+    return 0.22 + 0.95 * d;
+  }
+  function fogAt(x, y, z) {
+    const d = depthOf(x, y, z);
+    return clamp((d - 28) / 120, 0, 0.55);
+  }
+
+  function buildRoot(frame, openAmount, limit) {
+    const TH = 56;
+    const ZS = 28;
+    const zA = -26, zB = 54;
+    for (let j = 0; j < ZS; j++) {
+      const za = zA + (zB - zA) * j / ZS;
+      const zb = zA + (zB - zA) * (j + 1) / ZS;
+      const zm = (za + zb) * 0.5;
+      let fade = 1;
+      if (zm < -16) fade = clamp((zm + 26) / 10, 0, 1);
+      if (zm > 42) fade = clamp((54 - zm) / 12, 0, 1);
+      if (cam.ortho > 0.72 && (zm < -6 || zm > 24)) continue;
+      for (let i = 0; i < TH; i++) {
+        const ta = (i / TH) * TAU;
+        const tb = ((i + 1) / TH) * TAU;
+        const tm = (ta + tb) * 0.5;
+        const r00 = rootRadius(ta, za, openAmount);
+        const r10 = rootRadius(tb, za, openAmount);
+        const r11 = rootRadius(tb, zb, openAmount);
+        const r01 = rootRadius(ta, zb, openAmount);
+        setP(0, Math.cos(ta) * r00, Math.sin(ta) * r00, za);
+        setP(1, Math.cos(tb) * r10, Math.sin(tb) * r10, za);
+        setP(2, Math.cos(tb) * r11, Math.sin(tb) * r11, zb);
+        setP(3, Math.cos(ta) * r01, Math.sin(ta) * r01, zb);
+        const mx = (P[0].x + P[1].x + P[2].x + P[3].x) * 0.25;
+        const my = (P[0].y + P[1].y + P[2].y + P[3].y) * 0.25;
+        const hole = ostiumHit(mx, my, zm);
+        if (hole) continue;
+        let poly = [P[0], P[1], P[2], P[3]];
+        if (limit < 40) poly = clipKeep(poly, limit);
+        if (poly.length < 3) continue;
+        const rim = Math.max(0, Math.sin(tm) * 0.85 + 0.15);
+        const light = 0.55 + 0.7 * rim;
+        const lobe = 0.5 + 0.5 * Math.cos(3 * (tm - LOBE));
+        const cr = 78 + lobe * 36;
+        const cg = 42 + lobe * 16;
+        const cb = 52 + lobe * 14;
+        const fog = fogAt(mx, my, zm);
+        pushPoly(poly, shade(cr, cg, cb, light, fog), 0.96 * fade, 0);
+      }
+    }
+  }
+
+  function ostiumCenter(which, openAmount) {
+    const ang = which === 0 ? Math.PI : Math.PI / 3;
+    const z = which === 0 ? 16.1 : 13.9;
+    const r = rootRadius(ang, z, openAmount) - 0.15;
+    return { x: Math.cos(ang) * r, y: Math.sin(ang) * r, z, ang, rWall: r };
+  }
+  function ostiumHit(x, y, z) {
+    for (let w = 0; w < 2; w++) {
+      const ang = w === 0 ? Math.PI : Math.PI / 3;
+      const oz = w === 0 ? 16.1 : 13.9;
+      if (Math.abs(z - oz) > 2.5) continue;
+      const wall = rootRadius(ang, oz, 0);
+      const ox = Math.cos(ang) * wall;
+      const oy = Math.sin(ang) * wall;
+      const d = Math.hypot(x - ox, y - oy, (z - oz) * 0.85);
+      if (d < 2.15) return true;
+    }
+    return false;
+  }
+
+  function buildOstia(openAmount, limit) {
+    for (let w = 0; w < 2; w++) {
+      const o = ostiumCenter(w, openAmount);
+      if (o.x > limit - 0.2) continue;
+      const dirx = Math.cos(o.ang), diry = Math.sin(o.ang);
+      const px = -diry, py = dirx;
+      for (let k = 0; k < 10; k++) {
+        const a0 = (k / 10) * TAU;
+        const a1 = ((k + 1) / 10) * TAU;
+        const rim = 2.05;
+        const c0x = o.x + (Math.cos(a0) * px + Math.sin(a0) * dirx * 0.35) * rim;
+        const c0y = o.y + (Math.cos(a0) * py + Math.sin(a0) * diry * 0.35) * rim;
+        const c1x = o.x + (Math.cos(a1) * px + Math.sin(a1) * dirx * 0.35) * rim;
+        const c1y = o.y + (Math.cos(a1) * py + Math.sin(a1) * diry * 0.35) * rim;
+        const inset = 1.6;
+        setP(0, c0x, c0y, o.z);
+        setP(1, c1x, c1y, o.z);
+        setP(2, c1x - dirx * inset, c1y - diry * inset, o.z);
+        setP(3, c0x - dirx * inset, c0y - diry * inset, o.z);
+        pushPoly([P[0], P[1], P[2], P[3]], shade(18, 8, 12, 0.4, 0.15), 0.95, 0);
+      }
+      const hole = [];
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * TAU;
+        hole.push({
+          x: o.x - dirx * 1.15 + Math.cos(a) * px * 1.7 + Math.sin(a) * dirx * 0.35,
+          y: o.y - diry * 1.15 + Math.cos(a) * py * 1.7 + Math.sin(a) * diry * 0.35,
+          z: o.z + Math.sin(a) * 0.35
+        });
+      }
+      for (let i = 1; i < hole.length - 1; i++) {
+        pushPoly([hole[0], hole[i], hole[i + 1]], "#12060a", 0.95, 0);
+      }
+    }
+  }
+
+  function buildCalcium(frame, limit) {
+    const disp = dispAmount(frame);
+    for (let k = 0; k < 3; k++) {
+      const center = LOBE + k * TAU / 3;
+      const U = 14, V = 8;
+      for (let j = 0; j < V; j++) {
+        for (let i = 0; i < U; i++) {
+          const quad = [];
+          for (let e = 0; e < 4; e++) {
+            const ii = i + (e === 1 || e === 2 ? 1 : 0);
+            const jj = j + (e >= 2 ? 1 : 0);
+            const u = ii / U;
+            const v = jj / V;
+            const mid = Math.sin(u * Math.PI);
+            const ang = center + (u - 0.5) * (TAU / 3) * 0.92;
+            const z = lerp(-1.2, 11.2, v);
+            const wall = rootRadius(ang, z, 0);
+            const n = (hash(k * 80 + i * 5 + j) - 0.5) * 0.7;
+            const inner0 = 3.15 + (1 - mid) * 1.35 + n;
+            const thick = (1.15 + mid * 1.7) * lerp(1, 0.72, disp);
+            const inner1 = wall - 1.15 - thick;
+            const inner = lerp(inner0, inner1, disp);
+            const outer = inner + thick * lerp(1, 0.85, disp);
+            const useOuter = e === 0 || e === 1 ? inner : inner;
+            quad.push({
+              x: Math.cos(ang) * (e < 2 ? inner : outer),
+              y: Math.sin(ang) * (e < 2 ? inner : outer),
+              z
+            });
+            void useOuter;
+          }
+          const a = quad[0], b = quad[1], c = { x: quad[1].x, y: quad[1].y, z: quad[1].z };
+          void c;
+          const poly = [quad[0], quad[1],
+            { x: Math.cos(center + ((i + 1) / U - 0.5) * (TAU / 3) * 0.92) * (lerp(3.15, rootRadius(center, lerp(-1.2, 11.2, (j + 1) / V), 0) - 2.2, disp)), y: 0, z: 0 }
+          ];
+          void a; void b; void poly;
+          const pts = calciumQuad(k, i, j, disp);
+          if (limit < 40) {
+            const clipped = clipKeep(pts, limit);
+            if (clipped.length < 3) continue;
+            const light = inwardLight(clipped);
+            const fog = fogAt(pts[0].x, pts[0].y, pts[0].z);
+            const speckle = hash(k * 50 + i * 9 + j);
+            pushPoly(clipped, shade(255, 90 + speckle * 40, 95, light, fog), 0.94, 0);
+          } else {
+            const light = inwardLight(pts);
+            const fog = fogAt(pts[0].x, pts[0].y, pts[0].z);
+            const speckle = hash(k * 50 + i * 9 + j);
+            pushPoly(pts, shade(255, 90 + speckle * 30, 95, light, fog), 0.94, 0);
+          }
+        }
+      }
+      for (let n = 0; n < 5; n++) {
+        const u = hash(k * 17 + n * 3);
+        const v = hash(k * 19 + n * 5);
+        const mid = Math.sin(u * Math.PI);
+        const ang = center + (u - 0.5) * (TAU / 3) * 0.8;
+        const z = lerp(-0.4, 10.4, v);
+        const wall = rootRadius(ang, z, 0);
+        const r = lerp(3.4 + mid, wall - 1.5 - mid, disp);
+        const x = Math.cos(ang) * r;
+        const y = Math.sin(ang) * r;
+        if (x > limit) continue;
+        const size = 0.85 + hash(n + 4 + k) * 1.15;
+        nodule(x, y, z, size, hash(n + k * 9));
+      }
+    }
+  }
+
+  function calciumQuad(k, i, j, disp) {
+    const center = LOBE + k * TAU / 3;
+    const U = 14, V = 8;
+    const pts = [0, 1, 2, 3].map(() => ({ x: 0, y: 0, z: 0 }));
+    const corners = [[0, 0], [1, 0], [1, 1], [0, 1]];
+    for (let e = 0; e < 4; e++) {
+      const ii = i + corners[e][0];
+      const jj = j + corners[e][1];
+      const u = ii / U;
+      const v = jj / V;
+      const mid = Math.sin(Math.max(0.001, Math.min(0.999, u)) * Math.PI);
+      const ang = center + (u - 0.5) * (TAU / 3) * 0.92;
+      const z = lerp(-1.2, 11.2, v);
+      const wall = rootRadius(ang, z, 0);
+      const n = (hash(k * 80 + ii * 5 + jj) - 0.5) * 0.55;
+      const thick = (1.2 + mid * 1.65);
+      const inner = lerp(3.2 + (1 - mid) * 1.2 + n, wall - 1.2 - thick, disp);
+      pts[e].x = Math.cos(ang) * inner;
+      pts[e].y = Math.sin(ang) * inner;
+      pts[e].z = z;
+    }
+    return pts;
+  }
+
+  function nodule(x, y, z, size, seed) {
+    const seg = 7;
+    const bands = 3;
+    for (let b = 0; b < bands; b++) {
+      const t0 = -0.5 + b / bands;
+      const t1 = -0.5 + (b + 1) / bands;
+      const r0 = Math.cos(t0 * Math.PI) * size;
+      const r1 = Math.cos(t1 * Math.PI) * size;
+      const z0 = z + Math.sin(t0 * Math.PI) * size * 0.72;
+      const z1 = z + Math.sin(t1 * Math.PI) * size * 0.72;
+      for (let i = 0; i < seg; i++) {
+        const a0 = (i / seg) * TAU;
+        const a1 = ((i + 1) / seg) * TAU;
+        setP(0, x + Math.cos(a0) * r0, y + Math.sin(a0) * r0, z0);
+        setP(1, x + Math.cos(a1) * r0, y + Math.sin(a1) * r0, z0);
+        setP(2, x + Math.cos(a1) * r1, y + Math.sin(a1) * r1, z1);
+        setP(3, x + Math.cos(a0) * r1, y + Math.sin(a0) * r1, z1);
+        const light = 0.35 + 0.65 * Math.max(0, Math.cos(a0 - 0.6) * 0.6 + (b / bands) * 0.5);
+        const fog = fogAt(x, y, z);
+        const bone = seed > 0.78;
+        const col = bone
+          ? shade(244, 230, 214, light, fog)
+          : shade(255, 96, 100, light, fog);
+        pushPoly([P[0], P[1], P[2], P[3]], col, 0.96, 0);
+      }
+    }
+  }
+
+  function stentPoint(i, j, frame) {
+    const v = j / ROWS;
+    const shift = systemShift(frame);
+    const z = Z0 + v * (Z1 - Z0) + shift;
+    const spring = springAt(z, frame);
+    const twist = (1 - spring) * 0.55 * (v - 0.5);
+    const ang = (i / COLS) * TAU + twist;
+    const r = lerp(CRIMP, targetRadius(clamp(v, 0, 1)), spring);
+    return { x: Math.cos(ang) * r, y: Math.sin(ang) * r, z, spring, r };
+  }
+
+  function traceStrut(i0, j0, i1, j1, frame, limit) {
+    const steps = 4;
+    let prev = stentPoint(i0, j0, frame);
+    for (let s = 1; s <= steps; s++) {
+      const t = s / steps;
+      const p = stentPoint(lerp(i0, i1, t), lerp(j0, j1, t), frame);
+      const spring = (prev.spring + p.spring) * 0.5;
+      if (spring > 0.05 && !(prev.x > limit && p.x > limit)) {
+        const mx = (prev.x + p.x) * 0.5;
+        const my = (prev.y + p.y) * 0.5;
+        const mz = (prev.z + p.z) * 0.5;
+        const vx = cam.px - mx, vy = cam.py - my, vz = cam.pz - mz;
+        const radial = Math.hypot(mx, my) || 1;
+        const view = Math.hypot(vx, vy, vz) || 1;
+        const facing = (mx * vx + my * vy) / (radial * view);
+        const axial = Math.abs(vz) > Math.hypot(vx, vy) * 0.85;
+        const front = axial ? 1 : (facing > 0.05 ? 0.35 + 0.65 * clamp(facing, 0, 1) : 0.14);
+        const heat = Math.sin(clamp(spring, 0, 1) * Math.PI);
+        const col = rgb(lerp(0, 180, heat * 0.5), lerp(170, 245, spring), lerp(160, 216, spring));
+        pushLine(prev.x, prev.y, prev.z, p.x, p.y, p.z, col, 1.35, 0.96 * front, (0.12 + heat * 0.28) * front);
+      }
+      prev = p;
+    }
+  }
+  function buildStent(frame, limit) {
+    for (let j = 0; j < ROWS; j++) {
+      for (let i = 0; i < COLS; i++) {
+        traceStrut(i, j, i + 0.5, j + 1, frame, limit);
+        traceStrut(i, j, i - 0.5, j + 1, frame, limit);
+      }
+    }
+    for (let k = 0; k < 3; k++) {
+      const ang = k * TAU / 3;
+      for (let j = 1; j < ROWS; j++) {
+        const v0 = j / ROWS;
+        const v1 = (j + 1) / ROWS;
+        const z0 = Z0 + v0 * (Z1 - Z0) + systemShift(frame);
+        const z1 = Z0 + v1 * (Z1 - Z0) + systemShift(frame);
+        const s0 = springAt(z0, frame);
+        const s1 = springAt(z1, frame);
+        if (s0 < 0.72 || s1 < 0.72) continue;
+        const r0 = lerp(CRIMP, targetRadius(v0) + 0.15, s0);
+        const r1 = lerp(CRIMP, targetRadius(v1) + 0.15, s1);
+        pushLine(
+          Math.cos(ang) * r0, Math.sin(ang) * r0, z0,
+          Math.cos(ang) * r1, Math.sin(ang) * r1, z1,
+          "#e7fffb", 2.2, 0.95, 0.4
+        );
+      }
+    }
+  }
+
+  function buildSkirt(frame, limit) {
+    const shift = systemShift(frame);
+    for (let j = 0; j < 4; j++) {
+      const v0 = 0.08 + j * 0.07;
+      const v1 = v0 + 0.07;
+      const z0 = Z0 + v0 * (Z1 - Z0) + shift;
+      const z1 = Z0 + v1 * (Z1 - Z0) + shift;
+      const s0 = springAt(z0, frame);
+      const s1 = springAt(z1, frame);
+      if (s0 < 0.2 && s1 < 0.2) continue;
+      for (let i = 0; i < 24; i++) {
+        const a0 = (i / 24) * TAU;
+        const a1 = ((i + 1) / 24) * TAU;
+        const r0 = lerp(CRIMP, targetRadius(v0) + 0.35, s0);
+        const r1 = lerp(CRIMP, targetRadius(v1) + 0.35, s1);
+        setP(0, Math.cos(a0) * r0, Math.sin(a0) * r0, z0);
+        setP(1, Math.cos(a1) * r0, Math.sin(a1) * r0, z0);
+        setP(2, Math.cos(a1) * r1, Math.sin(a1) * r1, z1);
+        setP(3, Math.cos(a0) * r1, Math.sin(a0) * r1, z1);
+        if (P[0].x > limit && P[1].x > limit) continue;
+        let poly = [P[0], P[1], P[2], P[3]];
+        if (limit < 40) poly = clipKeep(poly, limit);
+        if (poly.length < 3) continue;
+        const light = inwardLight(poly);
+        pushPoly(poly, shade(255, 236, 224, light, fogAt(P[0].x, P[0].y, P[0].z)), 0.38 + 0.4 * s0, 0);
+      }
+    }
+  }
+
+  function leafletPoint(k, u, v, frame, heart) {
+    const center = LOBE + k * TAU / 3;
+    const ang = center + (u - 0.5) * (TAU / 3);
+    const mid = Math.sin(u * Math.PI);
+    const zAttach = lerp(12.4, -1.4, mid);
+    const open = heart.open;
+    const rAttach = Math.max(1.15, frameRadius(zAttach, frame) - 0.3);
+    const rClosed = lerp(rAttach, 0.05, v);
+    const rOpen = lerp(rAttach, rAttach * (0.88 - 0.34 * mid), v);
+    const belly = Math.sin(v * Math.PI) * mid * lerp(2.8, 0.25, open);
+    const r = lerp(rClosed, rOpen, open) + belly;
+    const zDome = Math.sin(v * Math.PI) * mid * lerp(3.6, 0.4, open);
+    const z = lerp(zAttach, lerp(7.2, zAttach + 1.6, open), v) + zDome;
+    const exist = Math.max(heart.exist, open);
+    const rr = lerp(CRIMP * 0.9, r, exist);
+    const zz = lerp((Z0 + Z1) * 0.5, z, exist);
+    return {
+      x: Math.cos(ang) * rr,
+      y: Math.sin(ang) * rr,
+      z: zz + (exist < 1 ? systemShift(frame) * (1 - exist) : 0)
+    };
+  }
+
+  function buildLeaflets(frame, heart, limit) {
+    if (heart.exist < 0.04 && heart.open < 0.04) return;
+    const U = 12, V = 7;
+    for (let k = 0; k < 3; k++) {
+      for (let j = 0; j < V; j++) {
+        for (let i = 0; i < U; i++) {
+          const corners = [[0, 0], [1, 0], [1, 1], [0, 1]];
+          const pts = corners.map(([di, dj]) => {
+            const u = (i + di) / U;
+            const v = (j + dj) / V;
+            return leafletPoint(k, u, v, frame, heart);
+          });
+          if (pts.every((p) => p.x > limit)) continue;
+          let poly = pts;
+          if (limit < 40) poly = clipKeep(pts, limit);
+          if (poly.length < 3) continue;
+          const uMid = (i + 0.5) / U;
+          const seam = Math.min(uMid, 1 - uMid) * 2;
+          const tone = seam < 0.045 ? 36 : (k === 1 ? 6 : 0);
+          const col = shade(255 - tone, 241 - tone, 230 - tone * 0.25, 0.96, 0.02);
+          pushPoly(poly, col, Math.max(heart.exist, heart.open > 0 ? 1 : heart.exist), 0, 1);
+        }
+      }
+      if (heart.exist > 0.8 && heart.open < 0.25) {
+        const center = LOBE + k * TAU / 3;
+        const ang = center + TAU / 6;
+        const rA = Math.max(2, frameRadius(6, frame) * 0.92);
+        pushLine(0, 0, 6.4, Math.cos(ang) * rA, Math.sin(ang) * rA, 5.2, "rgba(90,62,54,0.85)", 1.6, 0.9, 0);
+      }
+      if (heart.exist > 0.6) {
+        for (let i = 0; i <= U; i += 1) {
+          const u = i / U;
+          const a = leafletPoint(k, u, 0.02, frame, heart);
+          if (a.x > limit) continue;
+          const pr = project(a.x, a.y, a.z);
+          if (pr.behind) continue;
+          const p = alloc();
+          p.type = "dot";
+          p.sx = pr.sx; p.sy = pr.sy; p.s = pr.s;
+          p.depth = pr.depth - 0.4;
+          p.color = "#c4b09f";
+          p.alpha = 0.95;
+          p.glow = 0;
+          p.width = Math.max(1.4, pr.s * 0.11);
+          p.n = 0;
+        }
+      }
+    }
+  }
+
+  function buildCatheter(frame, limit) {
+    const presence = catheterPresence(frame);
+    if (presence < 0.02) return;
+    const shift = systemShift(frame) + catheterWithdraw(frame);
+    const lip = sheathLip(frame) + catheterWithdraw(frame);
+    const capLen = 34;
+    const capEnd = lip + capLen;
+
+    cylinder(0, 0, -16 + shift, 0, 0, 20 + shift * 0.2 + catheterWithdraw(frame), SHAFT_R, 22, "#8d969c", "#d5dbdf", presence * 0.95, limit, false);
+
+    const noseA = -18.5 + shift;
+    const noseB = -12.2 + shift;
+    for (let j = 0; j < 6; j++) {
+      const t0 = j / 6, t1 = (j + 1) / 6;
+      const z0 = lerp(noseA, noseB, t0);
+      const z1 = lerp(noseA, noseB, t1);
+      const r0 = lerp(0.35, CAP_R, Math.pow(t0, 0.85));
+      const r1 = lerp(0.35, CAP_R, Math.pow(t1, 0.85));
+      ring(z0, z1, r0, r1, 16, presence, limit, false);
+    }
+    goldBand(noseA + 0.2, 0.7, presence, limit);
+
+    const capDrawEnd = frame < 165 ? Math.min(capEnd, 12 + shift) : capEnd;
+    for (let j = 0; j < 8; j++) {
+      const z0 = lerp(lip, capDrawEnd, j / 8);
+      const z1 = lerp(lip, capDrawEnd, (j + 1) / 8);
+      ring(z0, z1, CAP_R, CAP_R, 18, presence * 0.94, limit, true);
+    }
+    goldBand(lip + 0.8, CAP_R + 0.28, presence, limit);
+    goldBand(-1.6 + systemShift(frame), CAP_R + 0.45, presence, limit);
+    goldBand(1.7 + systemShift(frame), CAP_R + 0.45, presence, limit);
+
+    if (frame > 151 && frame < 330) {
+      const heat = Math.sin(clamp((frame - 151) / 180, 0, 1) * Math.PI);
+      const r = frameRadius(clamp(lip, Z0, Z1), frame) + 0.6;
+      ringLine(lip, r, `rgba(0,245,212,${0.45 + heat * 0.4})`, 2.4, limit);
+    }
+  }
+
+  function ring(z0, z1, r0, r1, seg, alpha, limit, capsule) {
+    for (let i = 0; i < seg; i++) {
+      const a0 = (i / seg) * TAU;
+      const a1 = ((i + 1) / seg) * TAU;
+      setP(0, Math.cos(a0) * r0, Math.sin(a0) * r0, z0);
+      setP(1, Math.cos(a1) * r0, Math.sin(a1) * r0, z0);
+      setP(2, Math.cos(a1) * r1, Math.sin(a1) * r1, z1);
+      setP(3, Math.cos(a0) * r1, Math.sin(a0) * r1, z1);
+      if (P[0].x > limit && P[1].x > limit) continue;
+      let poly = [P[0], P[1], P[2], P[3]];
+      if (limit < 40) poly = clipKeep(poly, limit);
+      if (poly.length < 3) continue;
+      const n = quadNormal(poly);
+      const L = norm(-0.2, 0.7, 0.4);
+      const diff = Math.max(0, n[0] * L[0] + n[1] * L[1] + n[2] * L[2]);
+      const spec = Math.pow(Math.max(0, n[1] * 0.2 + n[0] * 0.1 + n[2] * 0.9), 8);
+      const light = 0.25 + diff * 0.8 + spec * 0.45;
+      const fog = fogAt(P[0].x, P[0].y, P[0].z);
+      const col = capsule
+        ? shade(176, 186, 194, light, fog)
+        : shade(150, 158, 166, light, fog);
+      pushPoly(poly, col, alpha, 0);
+    }
+  }
+  function cylinder(x0, y0, z0, x1, y1, z1, r, seg, c0, c1, alpha, limit) {
+    void c0; void c1;
+    const dx = x1 - x0, dy = y1 - y0, dz = z1 - z0;
+    const len = Math.hypot(dx, dy, dz) || 1;
+    const steps = 10;
+    for (let s = 0; s < steps; s++) {
+      const t0 = s / steps, t1 = (s + 1) / steps;
+      ring(z0 + dz * t0, z0 + dz * t1, r, r, seg, alpha, limit, false);
+    }
+    void len;
+  }
+  function goldBand(z, r, alpha, limit) {
+    for (let i = 0; i < 20; i++) {
+      const a0 = (i / 20) * TAU;
+      const a1 = ((i + 1) / 20) * TAU;
+      const h = 0.55;
+      setP(0, Math.cos(a0) * r, Math.sin(a0) * r, z - h * 0.5);
+      setP(1, Math.cos(a1) * r, Math.sin(a1) * r, z - h * 0.5);
+      setP(2, Math.cos(a1) * r, Math.sin(a1) * r, z + h * 0.5);
+      setP(3, Math.cos(a0) * r, Math.sin(a0) * r, z + h * 0.5);
+      if (P[0].x > limit && P[2].x > limit) continue;
+      const n = quadNormal([P[0], P[1], P[2]]);
+      const spec = Math.pow(Math.max(0, n[1] * 0.4 + n[2] * 0.8), 6);
+      const light = 0.4 + spec;
+      pushPoly([P[0], P[1], P[2], P[3]], shade(226, 182, 87, light, fogAt(0, 0, z)), alpha, 0.15);
+    }
+  }
+  function ringLine(z, r, color, width, limit) {
+    for (let i = 0; i < 28; i++) {
+      const a0 = (i / 28) * TAU;
+      const a1 = ((i + 1) / 28) * TAU;
+      const x0 = Math.cos(a0) * r, y0 = Math.sin(a0) * r;
+      const x1 = Math.cos(a1) * r, y1 = Math.sin(a1) * r;
+      if (x0 > limit && x1 > limit) continue;
+      pushLine(x0, y0, z, x1, y1, z, color, width, 0.8, 1);
+    }
+  }
+
+  function buildSection(frame, openAmount, limit) {
+    if (limit > 40) return;
+    const zA = -22, zB = 50, steps = 36;
+    let prev = null;
+    for (let s = 0; s <= steps; s++) {
+      const z = zA + (zB - zA) * s / steps;
+      const hits = sectionHits(z, limit, openAmount);
+      if (prev && hits.length && prev.length) {
+        const used = new Set();
+        for (const a of prev) {
+          let best = -1;
+          let bestD = 7;
+          for (let h = 0; h < hits.length; h++) {
+            if (used.has(h)) continue;
+            const d = Math.hypot(a.ix - hits[h].ix, a.iy - hits[h].iy);
+            if (d < bestD) { bestD = d; best = h; }
+          }
+          if (best < 0) continue;
+          used.add(best);
+          const b = hits[best];
+          setP(0, a.ix, a.iy, a.z);
+          setP(1, a.ox, a.oy, a.z);
+          setP(2, b.ox, b.oy, b.z);
+          setP(3, b.ix, b.iy, b.z);
+          pushPoly([P[0], P[1], P[2], P[3]], shade(92, 58, 70, 0.9, 0.02), 1, 0);
+          pushLine(a.ix, a.iy, a.z, b.ix, b.iy, b.z, "rgba(255,241,230,0.55)", 1.25, 0.85, 0);
+        }
+      }
+      prev = hits;
+    }
+  }
+  function sectionHits(z, limit, openAmount) {
+    const hits = [];
+    const N = 72;
+    let prevX = 0, prevTh = 0;
+    for (let k = 0; k <= N; k++) {
+      const th = -Math.PI + (k / N) * TAU;
+      const r = rootRadius(th, z, openAmount);
+      const x = Math.cos(th) * r;
+      if (k > 0 && (prevX - limit) * (x - limit) <= 0 && Math.abs(x - prevX) > 1e-4) {
+        const t = (limit - prevX) / (x - prevX);
+        const thH = prevTh + t * (th - prevTh);
+        const rIn = rootRadius(thH, z, openAmount);
+        const rOut = rIn + 2.35;
+        hits.push({
+          th: thH, z,
+          ix: Math.cos(thH) * rIn, iy: Math.sin(thH) * rIn,
+          ox: Math.cos(thH) * rOut, oy: Math.sin(thH) * rOut
+        });
+      }
+      prevX = x; prevTh = th;
+    }
+    hits.sort((a, b) => a.th - b.th);
+    return hits;
+  }
+
+  function buildAnnulus(frame, limit) {
+    const lock = 1 - clamp(Math.abs(systemShift(frame)) / 2.2, 0, 1);
+    const alpha = frame < 200 ? 0.25 + lock * 0.55 : frame > 730 ? 0.2 : 0.12;
+    const r = ANN + 0.15;
+    for (let i = 0; i < 40; i++) {
+      if (i % 2 === 0 && frame < 520) continue;
+      const a0 = (i / 40) * TAU;
+      const a1 = ((i + 0.55) / 40) * TAU;
+      const x0 = Math.cos(a0) * r, y0 = Math.sin(a0) * r;
+      const x1 = Math.cos(a1) * r, y1 = Math.sin(a1) * r;
+      if (x0 > limit && x1 > limit) continue;
+      pushLine(x0, y0, 0, x1, y1, 0, `rgba(255,241,230,${alpha})`, 1.3, alpha, lock * 0.3);
+    }
+  }
+
+  function buildForces(frame, limit) {
+    const a = ramp(frame, 320, 380) * (1 - ramp(frame, 470, 520));
+    if (a < 0.05) return;
+    for (let k = 0; k < 6; k++) {
+      const ang = k * TAU / 6 + 0.2;
+      const z = 2 + (k % 3) * 2.4;
+      const r0 = frameRadius(z, frame);
+      const r1 = rootRadius(ang, z, 0) - 1.3;
+      const x0 = Math.cos(ang) * r0, y0 = Math.sin(ang) * r0;
+      const x1 = Math.cos(ang) * r1, y1 = Math.sin(ang) * r1;
+      if (x0 > limit) continue;
+      pushLine(x0, y0, z, x1, y1, z, `rgba(255,90,95,${0.15 + a * 0.75})`, 1.4, a, 0);
+    }
+  }
+
+  function buildFlow(frame, heart) {
+    const time = frame / 30;
+    const limit = cutX(frame);
+    const phase5 = ramp(frame, 760, 850);
+    const early = frame < 520 ? 0.28 * (1 - ramp(frame, 430, 520)) : 0;
+    const open = frame < 500 ? 0 : heart.open;
+
+    if (phase5 > 0.04 && open >= 0.4) {
+      for (let i = 0; i < 120; i++) {
+        const ang = hash(i * 4.1) * TAU;
+        const r = Math.pow(hash(i * 4.1 + 1), 0.65) * 7.4;
+        const speed = 1.2 - r / 9;
+        const life = 1.55;
+        const u = ((time * speed + hash(i * 4.1 + 2) * life) % life) / life;
+        const z = -20 + u * 64;
+        const wob = Math.sin(u * 8 + i) * 0.22;
+        const x = Math.cos(ang) * (r + wob);
+        const y = Math.sin(ang) * (r + wob);
+        if (x > limit - 0.2) continue;
+        const len = 6 + speed * 6;
+        const hot = clamp((7.4 - r) / 7.4, 0, 1);
+        const col = rgb(255, 120 + hot * 121, 110 + hot * 120);
+        pushLine(x, y, z, x * 0.98, y * 0.98, z - len, col, 1.6, phase5 * (0.4 + hot * 0.55), 0);
+      }
+    } else if (phase5 > 0.04) {
+      for (let s = 0; s < 3; s++) {
+        const sAng = LOBE + s * TAU / 3;
+        for (let i = 0; i < 16; i++) {
+          const w = time * 1.25 + i * 0.4 + s * 1.7;
+          const orbitR = 1.5 + (i % 5) * 0.6;
+          const x = Math.cos(sAng) * 15.2 + Math.cos(w) * orbitR;
+          const y = Math.sin(sAng) * 15.2 + Math.sin(w) * orbitR;
+          const z = 7.5 + Math.sin(w * 0.75) * 3.1;
+          if (x > limit - 0.2) continue;
+          pushLine(
+            x, y, z,
+            x + Math.sin(w) * 1.3, y - Math.cos(w) * 1.3, z + 0.3,
+            "#FFF1E6", 1.35, phase5 * 0.62, 0
+          );
+        }
+      }
+      for (let w = 0; w < 2; w++) {
+        const o = ostiumCenter(w, 0);
+        for (let n = 0; n < 4; n++) {
+          const u = (time * 0.5 + n * 0.23) % 1;
+          const dirx = Math.cos(o.ang);
+          const diry = Math.sin(o.ang);
+          const x = o.x + dirx * u * 6.5;
+          const y = o.y + diry * u * 6.5;
+          if (x > limit) continue;
+          pushLine(x, y, o.z, x - dirx * 1.8, y - diry * 1.8, o.z, "#FFF1E6", 1.35, phase5 * (1 - u) * 0.8, 0);
+        }
+      }
+    }
+
+    if (early > 0.03) {
+      for (let i = 0; i < 32; i++) {
+        const ang = hash(i + 11) * TAU;
+        const r = hash(i + 4) * 2.2;
+        const u = (time * 1.5 + i * 0.04) % 1;
+        const z = -1 + u * 26;
+        const x = Math.cos(ang) * r;
+        const y = Math.sin(ang) * r;
+        if (x > limit) continue;
+        pushLine(x, y, z, x, y, z - 5.5, "#FFF1E6", 1.25, early * (1 - u) * 0.75, 0);
+      }
+    }
+  }
+
+  const calls = [];
+  function call(frame, a, b, x, y, z, ox, oy, title) {
+    const alpha = ramp(frame, a, a + 18) * (1 - ramp(frame, b - 16, b));
+    if (alpha < 0.04) return;
+    calls.push({ x, y, z, ox, oy, title, alpha });
+  }
+
+  function buildCalls(frame, heart) {
+    calls.length = 0;
+    if (cam.w < 760) {
+      call(frame, 0, 150, 0, 0, 0, 120, -80, "14-French catheter");
+      return;
+    }
+    const shift = systemShift(frame);
+    call(frame, 10, 150, 0, 0, 8 + shift, 150, -70, "14-French catheter");
+    call(frame, 40, 168, 0, CAP_R + 0.5, 1.7 + shift, 160, 46, "Radiopaque marker");
+    call(frame, 20, 160, ANN * 0.2, ANN * 0.7, 0, -170, -36, "Annular plane");
+    call(frame, 30, 200, 4, 3.4, 4, 120, 90, "Calcified native leaflet");
+    call(frame, 160, 310, CAP_R, 0, sheathLip(frame) + 6, 150, -28, "Capsule pullback");
+    call(frame, 190, 340, 0, frameRadius(4, frame), 4, -150, -60, "Nitinol recovering");
+    call(frame, 320, 500, -16, 6, 12, -160, -20, "Sinus of Valsalva");
+    const lcc = ostiumCenter(0, heart.open);
+    const rcc = ostiumCenter(1, heart.open);
+    call(frame, 340, 510, lcc.x, lcc.y, lcc.z, -150, -48, "Left coronary ostium");
+    call(frame, 340, 510, rcc.x, rcc.y, rcc.z, 40, 70, "Right coronary ostium");
+    call(frame, 520, 750, 0, 2, 8, 0, -120, heart.systole ? "Systole, leaflets open" : "Diastole, leaflets sealed");
+    call(frame, 560, 750, FRAME_ANN, 0, -1, 140, 80, "Annular skirt apposed");
+    call(frame, 860, 1019, 0, 0, 28, 120, -36, "Relative velocity");
+  }
+
+  function drawPrims() {
+    for (let i = 0; i < primCount; i++) order[i] = i;
+    order.length = primCount;
+    order.sort((a, b) => pool[b].depth - pool[a].depth);
+    for (let n = 0; n < order.length; n++) {
+      const p = pool[order[n]];
+      if (p.type === "dot") {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.arc(p.sx, p.sy, p.width, 0, TAU);
+        ctx.fill();
+        continue;
+      }
+      const proj = [];
+      let behind = false;
+      for (let i = 0; i < p.n; i++) {
+        const pr = project(p.xyz[i * 3], p.xyz[i * 3 + 1], p.xyz[i * 3 + 2]);
+        if (pr.behind) behind = true;
+        proj.push(pr);
+      }
+      if (behind) continue;
+      ctx.globalAlpha = p.alpha;
+      if (p.type === "poly") {
+        ctx.beginPath();
+        ctx.moveTo(proj[0].sx, proj[0].sy);
+        for (let i = 1; i < proj.length; i++) ctx.lineTo(proj[i].sx, proj[i].sy);
+        ctx.closePath();
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if (p.stroke) {
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = 1.75;
+          ctx.stroke();
+        }
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(proj[0].sx, proj[0].sy);
+        ctx.lineTo(proj[1].sx, proj[1].sy);
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = p.width;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        if (p.glow > 0.2) {
+          gtx.beginPath();
+          gtx.moveTo(proj[0].sx, proj[0].sy);
+          gtx.lineTo(proj[1].sx, proj[1].sy);
+          gtx.strokeStyle = p.color;
+          gtx.globalAlpha = Math.min(1, p.alpha * p.glow);
+          gtx.lineWidth = p.width + 3.5;
+          gtx.lineCap = "round";
+          gtx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawCalls() {
+    ctx.font = "500 13px Space Grotesk, Segoe UI, sans-serif";
+    for (const c of calls) {
+      const pr = project(c.x, c.y, c.z);
+      if (pr.behind) continue;
+      if (pr.sx < 40 || pr.sx > cam.w - 40 || pr.sy < 40 || pr.sy > cam.h - 40) continue;
+      const x = pr.sx + c.ox;
+      const y = pr.sy + c.oy;
+      ctx.globalAlpha = c.alpha;
+      ctx.strokeStyle = "rgba(255,241,230,0.55)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(pr.sx, pr.sy);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.fillStyle = "#FFF1E6";
+      ctx.beginPath();
+      ctx.arc(pr.sx, pr.sy, 2.2, 0, TAU);
+      ctx.fill();
+      ctx.textAlign = c.ox >= 0 ? "left" : "right";
+      ctx.textBaseline = "middle";
+      ctx.fillText(c.title, x + (c.ox >= 0 ? 6 : -6), y);
+    }
+    ctx.globalAlpha = 1;
+    ctx.textAlign = "left";
+  }
+
+  function drawVignette(w, h) {
+    const g = ctx.createRadialGradient(w * 0.5, h * 0.48, h * 0.2, w * 0.5, h * 0.5, h * 0.72);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(1, "rgba(0,0,0,0.55)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  let grain = null;
+  function drawGrain(w, h) {
+    if (!grain) {
+      grain = document.createElement("canvas");
+      grain.width = 180; grain.height = 180;
+      const gx = grain.getContext("2d");
+      const img = gx.createImageData(180, 180);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const n = 120 + Math.random() * 130;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = n;
+        img.data[i + 3] = 28;
+      }
+      gx.putImageData(img, 0, 0);
+    }
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.drawImage(grain, 0, 0, w, h);
+    ctx.restore();
+  }
+
+  function resize() {
+    const dpr = Math.min(1.5, devicePixelRatio || 1);
+    const w = innerWidth;
+    const h = innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    glowCanvas.width = canvas.width;
+    glowCanvas.height = canvas.height;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function phaseInfo(frame) {
+    if (frame < 151) return ["01  /  05    Axial alignment", "A 14-French catheter sits across the stenotic native valve. Radiopaque markers settle onto the annular plane."];
+    if (frame < 301) return ["02  /  05    Capsule pullback", "The outer sheath retracts toward the aorta. Uncovered nitinol recovers its set shape and the diamond cells open."];
+    if (frame < 511) return ["03  /  05    Radial apposition", "Struts press calcified native leaflets into the sinuses of Valsalva. Both coronary ostia stay open above the skirt."];
+    if (frame < 751) return ["04  /  05    Leaflet coaptation", "Three sutured porcine pericardial leaflets open in systole and meet in diastole. In this model the annular skirt leaves no paravalvular channel."];
+    return ["05  /  05    Hemodynamic section", "The camera dollies back through a cut section. Pulsatile streamlines cross the anchored lumen. Diastole shows sinus recirculation and coronary fill."];
+  }
+
+  function updateChrome(frame, heart) {
+    const f = Math.round(clamp(frame, 0, 1019));
+    const ff = f % 30;
+    const sec = Math.floor(f / 30);
+    document.getElementById("tc").textContent = `00:${String(sec).padStart(2, "0")}:${String(ff).padStart(2, "0")}`;
+    document.getElementById("fr").textContent = `F ${String(f).padStart(4, "0")}`;
+    const info = phaseInfo(frame);
+    document.getElementById("phase-label").textContent = info[0];
+    document.getElementById("phase-copy").textContent = info[1];
+    const scrub = document.getElementById("scrub");
+    if (!scrubbing) scrub.value = String(f);
+    const badge = document.getElementById("badge");
+    if (frame >= 520 && frame < 980) {
+      badge.hidden = false;
+      badge.textContent = heart.systole ? "Systole" : "Diastole";
+      badge.style.color = heart.systole ? "#00F5D4" : "#FFF1E6";
+    } else badge.hidden = true;
+    document.body.dataset.frame = String(f);
+  }
+
+  function render(frame) {
+    primCount = 0;
+    viewLimit = cutX(frame);
+    const w = innerWidth;
+    const h = innerHeight;
+    const heart = cardiac(frame);
+    const limit = cutX(frame);
+    setCamera(frame, w, h);
+    ctx.fillStyle = "#0B0D13";
+    ctx.fillRect(0, 0, w, h);
+    const bg = ctx.createRadialGradient(w * 0.5, h * 0.48, 40, w * 0.5, h * 0.5, h * 0.7);
+    bg.addColorStop(0, "#1a1016");
+    bg.addColorStop(1, "#0B0D13");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+    gtx.clearRect(0, 0, w, h);
+
+    buildRoot(frame, heart.open, limit);
+    buildOstia(heart.open, limit);
+    buildCalcium(frame, limit);
+    buildAnnulus(frame, limit);
+    buildSkirt(frame, limit);
+    buildLeaflets(frame, heart, limit);
+    buildStent(frame, limit);
+    buildCatheter(frame, limit);
+    buildSection(frame, heart.open, limit);
+    buildForces(frame, limit);
+    buildFlow(frame, heart);
+    drawPrims();
+
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.filter = "blur(3px)";
+    ctx.globalAlpha = 0.5;
+    ctx.drawImage(glowCanvas, 0, 0, w, h);
+    ctx.restore();
+    ctx.filter = "none";
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+
+    buildCalls(frame, heart);
+    drawCalls();
+    drawVignette(w, h);
+    drawGrain(w, h);
+    updateChrome(frame, heart);
+    document.documentElement.dataset.ready = "1";
+  }
+
+  const playBtn = document.getElementById("play");
+  function setPlaying(next) {
+    playing = next;
+    playBtn.textContent = playing ? "Pause" : "Play";
+    playBtn.setAttribute("aria-pressed", playing ? "true" : "false");
+  }
+  playBtn.addEventListener("click", () => setPlaying(!playing));
+  document.getElementById("restart").addEventListener("click", () => { playhead = 0; setPlaying(true); });
+  const scrub = document.getElementById("scrub");
+  scrub.addEventListener("pointerdown", () => { scrubbing = true; setPlaying(false); });
+  scrub.addEventListener("pointerup", () => { scrubbing = false; });
+  scrub.addEventListener("input", () => {
+    playhead = Number(scrub.value) / 30;
+    render(playhead * 30);
+  });
+  document.querySelectorAll(".phases button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      playhead = Number(btn.dataset.frame) / 30;
+      setPlaying(false);
+      render(playhead * 30);
+    });
+  });
+  addEventListener("keydown", (e) => {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    let dirty = false;
+    if (e.code === "Space") { e.preventDefault(); setPlaying(!playing); }
+    if (e.code === "Home") { playhead = 0; dirty = true; }
+    if (e.code === "ArrowRight") { setPlaying(false); playhead = Math.min(1019 / 30, playhead + (e.shiftKey ? 10 : 1) / 30); dirty = true; }
+    if (e.code === "ArrowLeft") { setPlaying(false); playhead = Math.max(0, playhead - (e.shiftKey ? 10 : 1) / 30); dirty = true; }
+    if (e.key >= "1" && e.key <= "5") {
+      playhead = [40, 220, 400, 640, 920][Number(e.key) - 1] / 30;
+      setPlaying(false);
+      dirty = true;
+    }
+    if (dirty && !playing) render(playhead * 30);
+  });
+  addEventListener("resize", () => { resize(); render(playhead * 30); });
+
+  setPlaying(playing);
+  resize();
+  render(clamp(playhead, 0, 1019 / 30) * 30);
+
+  let last = performance.now();
+  let raf = 0;
+  function loop(now) {
+    if (!playing) { raf = 0; return; }
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!scrubbing) {
+      playhead += dt;
+      if (playhead >= 34) playhead = 0;
+    }
+    render(clamp(playhead, 0, 1019 / 30) * 30);
+    raf = requestAnimationFrame(loop);
+  }
+  const prevSetPlaying = setPlaying;
+  setPlaying = function (next) {
+    prevSetPlaying(next);
+    if (playing && !raf) {
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+  };
+  if (playing) raf = requestAnimationFrame(loop);
+
+  window.addEventListener("error", (ev) => {
+    document.title = "ERR " + (ev.message || "render");
+  });
+
+  window.__JIG__ = {
+    seek(frame) { playhead = frame / 30; setPlaying(false); render(frame); },
+    frame() { return Math.round(playhead * 30); }
+  };
+})();
+</script>
+</body>
+</html>
